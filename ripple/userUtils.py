@@ -58,7 +58,7 @@ def getIDSafe(_safeUsername):
 	:param _safeUsername: safe username
 	:return: None if the user doesn't exist, else user id
 	"""
-	result = glob.db.fetch("SELECT user_id FROM phpbb_users WHERE username_safe = %s LIMIT 1", (_safeUsername,))
+	result = glob.db.fetch("SELECT user_id FROM phpbb_users WHERE username_clean = %s LIMIT 1", (_safeUsername,))
 	if result is not None:
 		return result["user_id"]
 	return None
