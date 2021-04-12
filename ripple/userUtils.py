@@ -39,6 +39,13 @@ def getUserStats(userID, gameMode, *, relax=False):
 		(userID,)
 	)
 
+	if stats is None:
+		log.info("Creating new stats data for {}".format(userID))
+		glob.db.execute(
+			"INSERT INTO osu_user_stats{gm} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'XX', 0, 0, 0)".format(gm=modeForDB),
+			(userID,)
+		)
+		return getUserStats(userID, gameMode, relax=relax)
 	# Get game rank
 	stats["gameRank"] = getGameRank(userID, gameMode, relax=relax)
 
