@@ -1212,7 +1212,7 @@ def getDonorExpire(userID):
 	"""
 	data = glob.db.fetch("SELECT osu_subscriptionexpiry FROM phpbb_users WHERE user_id = %s LIMIT 1", (userID,))
 	if data is not None:
-		return int(time.mktime(time.strptime(date["osu_subscriptionexpiry"], "%Y-%m-%d %H:%M:%S"))*1000)
+		return int(time.mktime(time.strptime(data["osu_subscriptionexpiry"], "%Y-%m-%d %H:%M:%S"))*1000)
 	return 0
 
 
