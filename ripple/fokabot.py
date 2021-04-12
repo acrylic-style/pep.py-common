@@ -4,12 +4,14 @@ from objects import glob
 
 
 def _request(handler, json, timeout=3):
-	return requests.post(
-		"{}/{}".format(glob.conf["FOKABOT_API_BASE"].rstrip("/"), handler.lstrip("/")),
-		headers={"Secret": glob.conf["FOKABOT_API_SECRET"]},
-		json=json,
-		timeout=timeout
-	)
+	return None
+	# nuke foka bot
+	# return requests.post(
+	# 	"{}/{}".format(glob.conf["FOKABOT_API_BASE"].rstrip("/"), handler.lstrip("/")),
+	# 	headers={"Secret": glob.conf["FOKABOT_API_SECRET"]},
+	# 	json=json,
+	# 	timeout=timeout
+	# )
 
 
 def message(message, target):
