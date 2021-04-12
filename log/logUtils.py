@@ -1,10 +1,75 @@
 import logging
+import sys
+
+from common.constants import bcolors
+from common import generalUtils
 
 import time
 import os
 
 ENDL = "\n" if os.name == "posix" else "\r\n"
 
+def logMessage(message, alertType = "INFO", messageColor = bcolors.ENDC, discord = None, alertDev = False, of = None, stdout = True):
+	"""
+	Log a message
+
+	:param message: message to log
+	:param alertType: alert type string. Can be INFO, WARNING, ERROR or DEBUG. Default: INFO
+	:param messageColor: message console ANSI color. Default: no color
+	:param discord: Discord channel acronym for Schiavo. If None, don't log to Discord. Default: None
+	:param alertDev: 	if True, developers will be highlighted on Discord.
+						Obviously works only if the message will be logged to Discord.
+						Default: False
+	:param of:	Output file name (inside .data folder). If None, don't log to file. Default: None
+	:param stdout: If True, log to stdout (print). Default: True
+	:return:
+	"""
+	# Get type color from alertType
+	if alertType == "INFO":
+		typeColor = bcolors.GREEN
+	elif alertType == "WARNING":
+		typeColor = bcolors.YELLOW
+	elif alertType == "ERROR":
+		typeColor = bcolors.RED
+	elif alertType == "CHAT":
+		typeColor = bcolors.BLUE
+	elif alertType == "DEBUG":
+		typeColor = bcolors.PINK
+	else:
+		typeColor = bcolors.ENDC
+
+	# Message without colors
+	finalMessage = "[{time}] {type} - {message}".format(time=generalUtils.getTimestamp(), type=alertType, message=message)
+
+	# Message with colors
+	finalMessageConsole = "{typeColor}[{time}] {type}{endc} - {messageColor}{message}{endc}".format(
+		time=generalUtils.getTimestamp(),
+		type=alertType,
+		message=message,
+
+		typeColor=typeColor,
+		messageColor=messageColor,
+		endc=bcolors.ENDC)
+
+	# Log to console
+	if stdout:
+		print(finalMessageConsole)
+		sys.stdout.flush()
+
+	# Log to discord if needed
+	if discord is not None:
+		if discord == "bunker":
+			glob.schiavo.sendConfidential(message, alertDev)
+		elif discord == "cm":
+			glob.schiavo.sendCM(message)
+		elif discord == "staff":
+			glob.schiavo.sendStaff(message)
+		elif discord == "general":
+			glob.schiavo.sendGeneral(message)
+
+	# Log to file if needed
+	if of is not None:
+		glob.fileBuffers.write(".data/"+of, finalMessage+ENDL)
 
 def discord(channel, message, level=None):
 	import objects.glob
