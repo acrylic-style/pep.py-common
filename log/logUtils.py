@@ -50,6 +50,15 @@ def info(message):
 def debug(message):
 	logging.debug(message)
 
+def chat(message):
+	"""
+	Log a public chat message to stdout and to chatlog_public.txt.
+
+	:param message: message content
+	:return:
+	"""
+	logMessage(message, "CHAT", bcolors.BLUE, of="chatlog_public.txt")
+
 
 def rap(userID, message, discordChannel=None, through="FokaBot"):
 	"""
