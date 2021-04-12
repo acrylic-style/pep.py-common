@@ -56,21 +56,6 @@ def logMessage(message, alertType = "INFO", messageColor = bcolors.ENDC, discord
 		print(finalMessageConsole)
 		sys.stdout.flush()
 
-	# Log to discord if needed
-	if discord is not None:
-		if discord == "bunker":
-			glob.schiavo.sendConfidential(message, alertDev)
-		elif discord == "cm":
-			glob.schiavo.sendCM(message)
-		elif discord == "staff":
-			glob.schiavo.sendStaff(message)
-		elif discord == "general":
-			glob.schiavo.sendGeneral(message)
-
-	# Log to file if needed
-	if of is not None:
-		glob.fileBuffers.write(".data/"+of, finalMessage+ENDL)
-
 def discord(channel, message, level=None):
 	import objects.glob
 
