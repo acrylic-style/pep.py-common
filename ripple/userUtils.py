@@ -954,6 +954,15 @@ def isInPrivilegeGroup(userID, groupName):
 	)
 	return gid is not None
 
+def isSupporter(userID):
+	subscriber = glob.db.fetch(
+		"SELECT `osu_subscriber` FROM phpbb_users WHERE `user_id` = %s",
+		(userID,)
+	)
+	if subscriber is None:
+		return False
+	return subscriber == 1
+
 def isInPrivilegeGroupId(userID, groupId):
 	"""
 	Check if `userID` is in a privilege group.
@@ -1096,8 +1105,8 @@ def resetPendingFlag(userID, success=True):
 	:param success: if True, set USER_PUBLIC and USER_NORMAL flags too
 	"""
 	glob.db.execute(
-		"UPDATE phpbb_user_group SET user_pending = 0 WHERE user_id = %s",
-		(userID)
+		"UPDATE phpbb_user_group SET user_pending = 0 WHERE user_id = %s AND user_pending = 1",
+		(userID,)
 	)
 	if success:
 		gid = getGroupPrivileges("default")
