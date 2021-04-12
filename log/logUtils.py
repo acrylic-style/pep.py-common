@@ -62,8 +62,8 @@ def rap(userID, message, discordChannel=None, through="FokaBot"):
 	:return:
 	"""
 	import common.ripple
-	import objects.glob
-	objects.glob.db.execute("INSERT INTO rap_logs (id, userid, text, datetime, through) VALUES (NULL, %s, %s, %s, %s)", [userID, message, int(time.time()), through])
+	#import objects.glob
+	#objects.glob.db.execute("INSERT INTO rap_logs (id, userid, text, datetime, through) VALUES (NULL, %s, %s, %s, %s)", [userID, message, int(time.time()), through])
 	username = common.ripple.userUtils.getUsername(userID)
 	if discordChannel is not None:
 		discord(discordChannel, "{} {}".format(username, message))

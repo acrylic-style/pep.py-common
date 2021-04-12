@@ -10,16 +10,15 @@ def isRankable(m):
 	"""
 	# TODO: Check other modes unranked mods ...?
 	# return not ((m & mods.RELAX > 0) or (m & mods.RELAX2 > 0) or (m & mods.AUTOPLAY > 0) or (m & mods.SCOREV2 > 0))
-	return m & (mods.AUTOPLAY | mods.SCOREV2) == 0
+	return m & (mods.RELAX | mods.RELAX2 | mods.AUTOPLAY | mods.SCOREV2) == 0
 
 def readableGameMode(gameMode):
 	"""
-	Convert numeric gameMode to a readable format. Can be used for db too.
+	Convert numeric gameMode to a readable format. Cannot be used for db.
 
 	:param gameMode:
 	:return:
 	"""
-	# TODO: Same as common.constants.gameModes.getGameModeForDB, remove one
 	if gameMode == 0:
 		return "std"
 	elif gameMode == 1:
@@ -28,6 +27,22 @@ def readableGameMode(gameMode):
 		return "ctb"
 	else:
 		return "mania"
+
+def getGameModeForDB(gameMode):
+	"""
+	Convert numeric gameMode for usage by db.
+
+	:param gameMode:
+	:return:
+	"""
+	if gameMode == 0:
+		return ""
+	elif gameMode == 1:
+		return "_taiko"
+	elif gameMode == 2:
+		return "_fruits"
+	else:
+		return "_mania"
 
 def readableMods(m):
 	"""

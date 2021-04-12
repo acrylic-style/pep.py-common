@@ -19,13 +19,13 @@ def getGameModeForDB(gameMode):
 	"""
 
 	if gameMode == STD:
-		return "std"
+		return ""
 	elif gameMode == TAIKO:
-		return "taiko"
+		return "_taiko"
 	elif gameMode == CTB:
-		return "ctb"
+		return "_fruits"
 	else:
-		return "mania"
+		return "_mania"
 
 def getGamemodeFull(gameMode):
 	"""
