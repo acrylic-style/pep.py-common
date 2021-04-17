@@ -263,7 +263,7 @@ def calculatePP(userID, gameMode, *, relax=False):
 	gm = gameModes.getGameModeForDB(gameMode)
 	# TODO: Check if the beatmap is pp-able
 	return sum(round(round(row["pp"]) * 0.95 ** i) for i, row in enumerate(glob.db.fetchAll(
-		f"SELECT pp FROM osu_scores{gm}_high LEFT JOIN(osu_beatmaps) USING(checksum) "
+		f"SELECT pp FROM osu_scores{gm}_high "
 		"WHERE user_id = %s AND "
 		"pp IS NOT NULL "
 		"ORDER BY pp DESC LIMIT 500",
