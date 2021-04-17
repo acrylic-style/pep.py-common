@@ -241,9 +241,9 @@ def calculateAccuracy(userID, gameMode, *, relax=False):
 	gm=gameModes.getGameModeForDB(gameMode)
 	# Get best accuracy scores
 	bestAccScores = glob.db.fetchAll(
-		"SELECT accuracy FROM osu_scores{gm}_high WHERE user_id = %s "
+		f"SELECT accuracy FROM osu_scores{gm}_high WHERE user_id = %s "
 		"ORDER BY pp DESC LIMIT 500",
-		(userID, gm, relax)
+		(userID,)
 	)
 
 	v = 0
@@ -740,10 +740,9 @@ def getAccuracy(userID, gameMode, *, relax=False):
 	:param relax:
 	:return: accuracy
 	"""
+	m=gameModes.getGameModeForDB(gameMode)
 	res = glob.db.fetch(
-		"SELECT accuracy FROM osu_user_stats{m} WHERE user_id = %s LIMIT 1".format(
-			m=gameModes.getGameModeForDB(gameMode)
-		), (userID,)
+		f"SELECT accuracy FROM osu_user_stats{m} WHERE user_id = %s LIMIT 1", (userID,)
 	)
 	if res is None:
 		return 0
