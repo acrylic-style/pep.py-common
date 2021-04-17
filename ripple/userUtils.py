@@ -243,7 +243,7 @@ def calculateAccuracy(userID, gameMode, *, relax=False):
 	stats = glob.db.fetch(
 		f"""SELECT
 		accuracy_total,
-		accuracy_count,
+		accuracy_count 
 		FROM osu_user_stats{gm} WHERE user_id = %s LIMIT 1""",
 		(userID,)
 	)
