@@ -40,7 +40,12 @@ def getUserStats(userID, gameMode, *, relax=False):
 
 	if stats is None:
 		log.info("Creating new stats data for {}".format(userID))
-		country = glob.db.fetch("SELECT `country_acronym` FROM phpbb_users WHERE user_id = %s LIMIT 1", (userID,))
+		res = glob.db.fetch("SELECT `country_acronym` FROM phpbb_users WHERE user_id = %s LIMIT 1", (userID,))
+		if res is None:
+			log.warning("Failed to get country for {}".format(userID))
+			country = 'XX'
+		else:
+			country = res["country_acronym"]
 		glob.db.execute(
 			f"INSERT INTO osu_user_stats{modeForDB} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
 			(userID, country,)
