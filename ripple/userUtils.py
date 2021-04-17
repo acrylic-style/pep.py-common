@@ -751,23 +751,23 @@ def getGameRank(userID, gameMode, *, relax=False):
 	:return: game rank
 	"""
 	# don't use this
-	# gm = gameModes.getGameModeForDB(gameMode)
-	# res = glob.db.fetch(
-	# 	"SELECT `rank` FROM osu_user_stats{m} WHERE user_id = %s".format(
-	# 		m=gm
-	# 	), (userID,)
-	# )
-	# if res is None:
-	# 	return 0
-	# return res["rank"]
-	k = "ripple:leaderboard:{}".format(gameModes.getGameModeForDB(gameMode))
-	if relax:
-		k += ":relax"
-	position = glob.redis.zrevrank(k, userID)
-	if position is None:
+	gm = gameModes.getGameModeForDB(gameMode)
+	res = glob.db.fetch(
+		"SELECT `rank_score_index` FROM osu_user_stats{m} WHERE user_id = %s".format(
+			m=gm
+		), (userID,)
+	)
+	if res is None:
 		return 0
-	else:
-		return int(position) + 1
+	return res["rank"]
+	# k = "ripple:leaderboard:{}".format(gameModes.getGameModeForDB(gameMode))
+	# if relax:
+	# 	k += ":relax"
+	# position = glob.redis.zrevrank(k, userID)
+	# if position is None:
+	# 	return 0
+	# else:
+	# 	return int(position) + 1
 
 def getPlaycount(userID, gameMode, *, relax=False):
 	"""
