@@ -282,10 +282,10 @@ def updateAccuracy(userID, gameMode, *, relax=False):
 	newAcc = calculateAccuracy(userID, gameMode, relax=relax)
 	mode = scoreUtils.getGameModeForDB(gameMode)
 	glob.db.execute(
-		"UPDATE osu_user_stats{m} SET accuracy = %s WHERE user_id = %s LIMIT 1".format(
+		"UPDATE osu_user_stats{m} SET accuracy = %s, accuracy_new = %s WHERE user_id = %s LIMIT 1".format(
 			m=mode
 		),
-		(newAcc, userID)
+		(newAcc, newAcc * 100, userID)
 	)
 
 def updatePP(userID, gameMode, *, relax=False):
