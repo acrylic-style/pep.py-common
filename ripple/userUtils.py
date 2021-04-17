@@ -27,15 +27,14 @@ def getUserStats(userID, gameMode, *, relax=False):
 
 	# Get stats
 	stats = glob.db.fetch(
-		"""SELECT
+		f"""SELECT
 		ranked_score AS rankedScore,
-		accuracy,
+		accuracy_total,
+		accuracy_count,
 		playcount,
 		total_score AS totalScore,
 		rank_score AS pp
-		FROM osu_user_stats{gm} WHERE user_id = %s LIMIT 1""".format(
-			gm=modeForDB
-		),
+		FROM osu_user_stats{modeForDB} WHERE user_id = %s LIMIT 1""",
 		(userID,)
 	)
 
@@ -43,10 +42,11 @@ def getUserStats(userID, gameMode, *, relax=False):
 		log.info("Creating new stats data for {}".format(userID))
 		country = glob.db.fetch("SELECT `country_acronym` FROM phpbb_users WHERE user_id = %s LIMIT 1", (userID,))
 		glob.db.execute(
-			"INSERT INTO osu_user_stats{gm} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)".format(gm=modeForDB),
+			f"INSERT INTO osu_user_stats{modeForDB} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)".format(gm=modeForDB),
 			(userID, country,)
 		)
 		return getUserStats(userID, gameMode, relax=relax)
+	stats["accuracy"] = stats["accuracy_total"] / stats["accuracy_count"]
 	# Get game rank
 	stats["gameRank"] = getGameRank(userID, gameMode, relax=relax)
 
@@ -240,26 +240,16 @@ def calculateAccuracy(userID, gameMode, *, relax=False):
 	"""
 	gm=gameModes.getGameModeForDB(gameMode)
 	# Get best accuracy scores
-	bestAccScores = glob.db.fetchAll(
-		f"SELECT accuracy FROM osu_scores{gm}_high WHERE user_id = %s "
-		"ORDER BY pp DESC LIMIT 500",
+	stats = glob.db.fetch(
+		f"""SELECT
+		accuracy_total,
+		accuracy_count,
+		FROM osu_user_stats{modeForDB} WHERE user_id = %s LIMIT 1""",
 		(userID,)
 	)
-
-	v = 0
-	if bestAccScores is not None:
-		# Calculate weighted accuracy
-		totalAcc = 0
-		divideTotal = 0
-		for k, i in enumerate(bestAccScores):
-			add = int((0.95 ** k) * 100)
-			totalAcc += i["accuracy"] * add
-			divideTotal += add
-		if divideTotal != 0:
-			v = totalAcc / divideTotal
-		else:
-			v = 0
-	return v
+	if stats is None:
+		return 0
+	return stats["accuracy_total"] / stats["accuracy_count"]
 
 def calculatePP(userID, gameMode, *, relax=False):
 	"""
@@ -1336,11 +1326,10 @@ def updateTotalHits(userID=0, gameMode=gameModes.STD, newHits=0, score=None, *, 
 		newHits = score.c50 + score.c100 + score.c300
 		gameMode = score.gameMode
 		userID = score.playerUserID
+		gm=gameModes.getGameModeForDB(gameMode)
 		glob.db.execute(
-			"UPDATE osu_user_stats{gm} SET count300 = count300 + %s, count100 = count100 + %s, count50 = count50 + %s, countMiss = countMiss + %s WHERE user_id = %s LIMIT 1".format(
-				gm=gameModes.getGameModeForDB(gameMode)
-			),
-			(score.c300, score.c100, score.c50, score.cMiss, newHits, userID)
+			f"UPDATE osu_user_stats{gm} SET count300 = count300 + %s, count100 = count100 + %s, count50 = count50 + %s, countMiss = countMiss + %s WHERE user_id = %s LIMIT 1",
+			(score.c300, score.c100, score.c50, score.cMiss, userID)
 		)
 
 def isRelaxLeaderboard(userID):
