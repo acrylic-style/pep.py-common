@@ -296,15 +296,19 @@ def updatePP(userID, gameMode, *, relax=False):
 	:param gameMode: game mode number
 	:param relax: if True, calculate relax pp, otherwise calculate classic pp
 	"""
+	pp = calculatePP(userID, gameMode, relax=relax)
+	gm = gameModes.getGameModeForDB(gameMode)
 	glob.db.execute(
-		"UPDATE osu_user_stats{m} SET rank_score=%s WHERE user_id = %s LIMIT 1".format(
-			m=scoreUtils.getGameModeForDB(gameMode)
-		),
-		(
-			calculatePP(userID, gameMode, relax=relax),
-			userID
-		)
+		"UPDATE osu_user_stats{} SET rank_score=%s WHERE user_id = %s LIMIT 1".format(gm),
+		(pp, userID)
 	)
+	res = glob.db.fetch(
+		"SELECT COUNT(*) AS `rank` FROM osu_user_stats{} WHERE rank_score >= %s".format(gm),
+		(pp,)
+	)
+	if res is not None:
+		# Update rank
+		glob.db.execute("UPDATE osu_user_stats{} SET rank_score_index = %s WHERE user_id = %s LIMIT 1".format(gm), (res["rank"], userID))
 
 
 def updateStats(userID, score_, *, relax=False):
