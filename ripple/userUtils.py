@@ -373,9 +373,9 @@ def updateStats(userID, score_, *, relax=False):
 
 def incrementUserBeatmapPlaycount(userID, gameMode, beatmapID):
 	glob.db.execute(
-		"INSERT INTO users_beatmap_playcount (user_id, beatmap_id, game_mode, playcount) "
-		"VALUES (%s, %s, %s, 1) ON DUPLICATE KEY UPDATE playcount = playcount + 1",
-		(userID, beatmapID, gameMode)
+		"INSERT INTO osu_user_beatmap_playcount (user_id, beatmap_id, playcount) "
+		"VALUES (%s, %s, 1) ON DUPLICATE KEY UPDATE playcount = playcount + 1",
+		(userID, beatmapID)
 	)
 
 
