@@ -759,7 +759,7 @@ def getGameRank(userID, gameMode, *, relax=False):
 	)
 	if res is None:
 		return 0
-	return res["rank"]
+	return res["rank_score_index"]
 	# k = "ripple:leaderboard:{}".format(gameModes.getGameModeForDB(gameMode))
 	# if relax:
 	# 	k += ":relax"
