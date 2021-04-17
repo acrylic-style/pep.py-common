@@ -42,7 +42,7 @@ def getUserStats(userID, gameMode, *, relax=False):
 		log.info("Creating new stats data for {}".format(userID))
 		country = glob.db.fetch("SELECT `country_acronym` FROM phpbb_users WHERE user_id = %s LIMIT 1", (userID,))
 		glob.db.execute(
-			f"INSERT INTO osu_user_stats{modeForDB} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)".format(gm=modeForDB),
+			f"INSERT INTO osu_user_stats{modeForDB} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
 			(userID, country,)
 		)
 		return getUserStats(userID, gameMode, relax=relax)
@@ -244,7 +244,7 @@ def calculateAccuracy(userID, gameMode, *, relax=False):
 		f"""SELECT
 		accuracy_total,
 		accuracy_count,
-		FROM osu_user_stats{modeForDB} WHERE user_id = %s LIMIT 1""",
+		FROM osu_user_stats{gm} WHERE user_id = %s LIMIT 1""",
 		(userID,)
 	)
 	if stats is None:
