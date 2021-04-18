@@ -33,7 +33,8 @@ def getUserStats(userID, gameMode, *, relax=False):
 		accuracy_count,
 		playcount,
 		total_score AS totalScore,
-		rank_score AS pp
+		rank_score AS pp,
+		max_combo 
 		FROM osu_user_stats{modeForDB} WHERE user_id = %s LIMIT 1""",
 		(userID,)
 	)
