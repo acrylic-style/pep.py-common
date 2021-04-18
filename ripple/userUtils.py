@@ -47,7 +47,27 @@ def getUserStats(userID, gameMode, *, relax=False):
 		else:
 			country = res["country_acronym"]
 		glob.db.execute(
-			f"INSERT INTO osu_user_stats{modeForDB} (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
+			f"INSERT IGNORE INTO osu_user_stats (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
+			(userID, country,)
+		)
+		glob.db.execute(
+			f"INSERT IGNORE INTO osu_user_stats_taiko (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
+			(userID, country,)
+		)
+		glob.db.execute(
+			f"INSERT IGNORE INTO osu_user_stats_fruits (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
+			(userID, country,)
+		)
+		glob.db.execute(
+			f"INSERT IGNORE INTO osu_user_stats_mania (`user_id`, `accuracy_total`, `accuracy_count`, `accuracy`, `playcount`, `ranked_score`, `total_score`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `rank`, `level`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, %s, 0, 0, 0)",
+			(userID, country,)
+		)
+		glob.db.execute(
+			f"INSERT IGNORE INTO osu_user_stats_mania_4k (`user_id`, `playcount`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, %s, 0, 0, 0)",
+			(userID, country,)
+		)
+		glob.db.execute(
+			f"INSERT IGNORE INTO osu_user_stats_mania_7k (`user_id`, `playcount`, `x_rank_count`, `s_rank_count`, `a_rank_count`, `country_acronym`, `rank_score`, `rank_score_index`, `accuracy_new`) VALUES (%s, 0, 0, 0, 0, %s, 0, 0, 0)",
 			(userID, country,)
 		)
 		return getUserStats(userID, gameMode, relax=relax)
