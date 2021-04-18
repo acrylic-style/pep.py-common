@@ -71,7 +71,7 @@ def getUserStats(userID, gameMode, *, relax=False):
 			(userID, country,)
 		)
 		return getUserStats(userID, gameMode, relax=relax)
-	stats["accuracy"] = stats["accuracy_total"] / 10000 / max(1, stats["accuracy_count"])
+	stats["accuracy"] = float(stats["accuracy_total"]) / 10000.0 / max(1, stats["accuracy_count"])
 	# Get game rank
 	stats["gameRank"] = getGameRank(userID, gameMode, relax=relax)
 
