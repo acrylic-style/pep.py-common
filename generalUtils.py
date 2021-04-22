@@ -73,7 +73,7 @@ def getRank(gameMode=None, __mods=None, acc=None, c300=None, c100=None, c50=None
 
 	if gameMode == 0:
 		# osu!std
-		if acc == 100:
+		if acc == 1:
 			return ss()
 		if c300 / total > 0.90 and c50 / total < 0.1 and cmiss == 0:
 			return s()
@@ -89,7 +89,7 @@ def getRank(gameMode=None, __mods=None, acc=None, c300=None, c100=None, c50=None
 		return "A"
 	elif gameMode == 2:
 		# CtB
-		if acc == 100:
+		if acc == 1:
 			return ss()
 		if 98.01 <= acc <= 99.99:
 			return s()
@@ -102,7 +102,7 @@ def getRank(gameMode=None, __mods=None, acc=None, c300=None, c100=None, c50=None
 		return "D"
 	elif gameMode == 3:
 		# osu!mania
-		if acc == 100:
+		if acc == 1:
 			return ss()
 		if acc > 95:
 			return s()
