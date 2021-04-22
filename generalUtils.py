@@ -75,7 +75,7 @@ def getRank(gameMode=None, __mods=None, acc=None, c300=None, c100=None, c50=None
 		# osu!std
 		if acc == 1:
 			return ss()
-		if c300 / total > 0.90 and c50 / total < 0.1 and cmiss == 0:
+		if c300 / total > 0.90 and c50 / total <= 0.01 and cmiss == 0:
 			return s()
 		if (c300 / total > 0.80 and cmiss == 0) or (c300 / total > 0.90):
 			return "A"
@@ -85,32 +85,43 @@ def getRank(gameMode=None, __mods=None, acc=None, c300=None, c100=None, c50=None
 			return "C"
 		return "D"
 	elif gameMode == 1:
-		# TODO: taiko rank
-		return "A"
+		ratio300 = c300 / total
+		ratio50 = c50 / total
+		if acc == 1:
+			return ss()
+		if ratio300 > 0.9 and ratio50 <= 0.01 and cmiss == 0:
+			return s()
+		if (ratio300 > 0.8 and cmiss == 0) or ratio300 > 0.9:
+			return "A"
+		if (ratio300 > 0.7 and cmiss == 0) or (ratio300 > 0.8):
+			return "B"
+		if ratio300 > 0.6:
+			return "C"
+		return "D"
 	elif gameMode == 2:
 		# CtB
 		if acc == 1:
 			return ss()
-		if 98.01 <= acc <= 99.99:
+		if 0.9801 <= acc <= 0.9999:
 			return s()
-		if 94.01 <= acc <= 98.00:
+		if 0.9401 <= acc <= 0.98:
 			return "A"
-		if 90.01 <= acc <= 94.00:
+		if 0.9001 <= acc <= 0.94:
 			return "B"
-		if 98.01 <= acc <= 90.00:
+		if 0.9801 <= acc <= 0.9:
 			return "C"
 		return "D"
 	elif gameMode == 3:
 		# osu!mania
 		if acc == 1:
 			return ss()
-		if acc > 95:
+		if acc > 0.95:
 			return s()
-		if acc > 90:
+		if acc > 0.90:
 			return "A"
-		if acc > 80:
+		if acc > 0.80:
 			return "B"
-		if acc > 70:
+		if acc > 0.70:
 			return "C"
 		return "D"
 
