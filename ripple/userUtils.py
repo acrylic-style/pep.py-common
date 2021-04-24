@@ -331,7 +331,7 @@ def updatePP(userID, gameMode, *, relax=False):
 	updateRank(userID, gameMode, pp)
 
 def updateRank(userID, gameMode, pp = 0):
-	if pp is 0:
+	if pp == 0:
 		ppRes = glob.db.fetch("SELECT rank_score FROM osu_user_stats{} WHERE user_id = %s".format(gm), (userID,))
 		if ppRes is None:
 			return
