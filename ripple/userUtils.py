@@ -328,6 +328,15 @@ def updatePP(userID, gameMode, *, relax=False):
 		"UPDATE osu_user_stats{} SET rank_score=%s WHERE user_id = %s LIMIT 1".format(gm),
 		(pp, userID)
 	)
+	updateRank(userID, gameMode, pp)
+
+def updateRank(userID, gameMode, pp = 0):
+	if pp is 0:
+		ppRes = glob.db.fetch("SELECT rank_score FROM osu_user_stats{} WHERE user_id = %s".format(gm), (userID,))
+		if ppRes is None:
+			return
+		pp = ppRes["rank_score"]
+	gm = gameModes.getGameModeForDB(gameMode)
 	res = glob.db.fetch(
 		"SELECT COUNT(*) AS `rank` FROM osu_user_stats{} WHERE rank_score >= %s".format(gm),
 		(pp,)
@@ -335,6 +344,12 @@ def updatePP(userID, gameMode, *, relax=False):
 	if res is not None:
 		# Update rank
 		glob.db.execute("UPDATE osu_user_stats{} SET rank_score_index = %s WHERE user_id = %s LIMIT 1".format(gm), (res["rank"], userID))
+
+def updateRankGlobally(gameMode):
+	gm = gameModes.getGameModeForDB(gameMode)
+	users = glob.db.fetchAll("SELECT user_id FROM osu_user_stats{}".format(gm))
+	for uid in users:
+		updateRank(uid, gameMode)
 
 
 def updateStats(userID, score_, *, relax=False):
@@ -389,6 +404,7 @@ def updateStats(userID, score_, *, relax=False):
 
 		# Update pp
 		updatePP(userID, score_.gameMode, relax=relax)
+		updateRankGlobally(score_.gameMode)
 
 
 def incrementUserBeatmapPlaycount(userID, gameMode, beatmapID):
