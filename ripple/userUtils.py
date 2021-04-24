@@ -348,8 +348,11 @@ def updateRank(userID, gameMode, pp = 0):
 def updateRankGlobally(gameMode):
 	gm = gameModes.getGameModeForDB(gameMode)
 	users = glob.db.fetchAll("SELECT user_id FROM osu_user_stats{}".format(gm))
-	for uid in users:
-		updateRank(uid, gameMode)
+	if users is not None:
+		for uid in users:
+			updateRank(uid, gameMode)
+	else:
+		log.warning("Fetched None users")
 
 
 def updateStats(userID, score_, *, relax=False):
