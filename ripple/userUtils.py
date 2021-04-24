@@ -685,7 +685,7 @@ def appendNotes(userID, notes, addNl=True, trackDate=True):
 	:return:
 	"""
 	glob.db.execute(
-		"INSERT INTO osu_user_banhistory (`user_id`, `reason`, `ban_status`, `period`) values (%s, %s, 0, 0)",
+		"INSERT INTO osu_user_banhistory (`user_id`, `reason`, `ban_status`, `period`, `banner_id`) values (%s, %s, 0, 0, 999)",
 		(userID, notes)
 	)
 
