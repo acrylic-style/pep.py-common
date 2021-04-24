@@ -651,7 +651,7 @@ def restrict(userID):
 	# Set user as restricted in db
 	banDateTime = int(time.time())
 	glob.db.execute(
-		"UPDATE users SET user_warnings = 1 WHERE user_id = %s LIMIT 1",
+		"UPDATE phpbb_users SET user_warnings = 1 WHERE user_id = %s LIMIT 1",
 		(userID)
 	)
 
