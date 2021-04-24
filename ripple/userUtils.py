@@ -331,12 +331,12 @@ def updatePP(userID, gameMode, *, relax=False):
 	updateRank(userID, gameMode, pp)
 
 def updateRank(userID, gameMode, pp = 0):
+	gm = gameModes.getGameModeForDB(gameMode)
 	if pp == 0:
 		ppRes = glob.db.fetch("SELECT rank_score FROM osu_user_stats{} WHERE user_id = %s".format(gm), (userID,))
 		if ppRes is None:
 			return
 		pp = ppRes["rank_score"]
-	gm = gameModes.getGameModeForDB(gameMode)
 	res = glob.db.fetch(
 		"SELECT COUNT(*) AS `rank` FROM osu_user_stats{} WHERE rank_score >= %s".format(gm),
 		(pp,)
