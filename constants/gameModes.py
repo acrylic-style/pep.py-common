@@ -65,3 +65,25 @@ def getGameModeFromDB(s):
 		return _MODE_FROM_DB[s]
 	except KeyError:
 		return None
+
+
+def getSafeGameMode(gameMode: int):
+	if gameMode == STD:
+		return "osu"
+	elif gameMode == TAIKO:
+		return "taiko"
+	elif gameMode == CTB:
+		return "fruits"
+	else:
+		return "mania"
+
+
+def getWebGameMode(gameMode: int):
+	if gameMode == STD:
+		return "osu!"
+	elif gameMode == TAIKO:
+		return "osu!taiko"
+	elif gameMode == CTB:
+		return "osu!catch"
+	else:
+		return "osu!mania"
