@@ -102,13 +102,13 @@ def getRank(gameMode=None, __mods=None, acc=None, c300=None, c100=None, c50=None
 		# CtB
 		if acc == 1:
 			return ss()
-		if 0.9801 <= acc <= 0.9999:
+		if acc > 0.98:
 			return s()
-		if 0.9401 <= acc <= 0.98:
+		if acc > 0.94:
 			return "A"
-		if 0.9001 <= acc <= 0.94:
+		if acc > 0.9:
 			return "B"
-		if 0.9801 <= acc <= 0.9:
+		if acc > 0.85:
 			return "C"
 		return "D"
 	elif gameMode == 3:
