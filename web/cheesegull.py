@@ -3,14 +3,13 @@ import time
 def toDirect(data):
 	if len(data) == 0:
 		return ""
+	t = data[0]["last_update"] if data[0]["approved_date"] is None else data[0]["approved_date"]
 	s = "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|{rating}|{lastUpdate}|{beatmapset_id}|" \
 		"{beatmapset_id}|{HasVideoInt}|1|1337|{FileSizeNoVideo}|".format(
 			**data[0],
 			**{
 				"lastUpdate": int(time.mktime(
-					time.strptime(
-						data[0]["last_update"] if data[0]["approved_date"] is None else data[0]["approved_date"],
-						"%Y-%m-%d %H:%M:%S")) * 1000),
+					time.strptime(t, "%Y-%m-%d %H:%M:%S") if isinstance(t, str) else t) * 1000),
 				"HasVideoInt": int(data[0]["video"]),
 				"FileSizeNoVideo": "7331" if int(data[0]["video"]) == 1 else ""
 			}
@@ -31,14 +30,13 @@ def toDirect(data):
 
 
 def toDirectNp(data):
+	t = data[0]["last_update"] if data[0]["approved_date"] is None else data[0]["approved_date"]
 	return "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|{rating}|{lastUpdate}|{beatmapset_id}|" \
 		"{beatmapset_id}|{video}|1|1337|{FileSizeNoVideo}".format(
 		**data,
 		**{
 			"lastUpdate": int(time.mktime(
-				time.strptime(
-					data[0]["last_update"] if data[0]["approved_date"] is None else data[0]["approved_date"],
-					"%Y-%m-%d %H:%M:%S")) * 1000),
+				time.strptime(t, "%Y-%m-%d %H:%M:%S") if isinstance(t, str) else t) * 1000),
 			"video": int(data["video"]),
 			"FileSizeNoVideo": "7331" if int(data["video"]) == 1 else ""
 		}
