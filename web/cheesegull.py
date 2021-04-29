@@ -1,3 +1,4 @@
+from datetime import datetime
 import time
 
 def toDirect(data):
@@ -8,8 +9,7 @@ def toDirect(data):
 		"{beatmapset_id}|{HasVideoInt}|1|1337|{FileSizeNoVideo}|".format(
 			**data[0],
 			**{
-				"lastUpdate": int(time.mktime(
-					time.strptime(t, "%Y-%m-%d %H:%M:%S") if isinstance(t, str) else t) * 1000),
+				"lastUpdate": int(datetime.timestamp(time.strptime(t, "%Y-%m-%d %H:%M:%S") if isinstance(t, str) else t)),
 				"HasVideoInt": int(data[0]["video"]),
 				"FileSizeNoVideo": "7331" if int(data[0]["video"]) == 1 else ""
 			}
@@ -35,8 +35,7 @@ def toDirectNp(data):
 		"{beatmapset_id}|{video}|1|1337|{FileSizeNoVideo}".format(
 		**data,
 		**{
-			"lastUpdate": int(time.mktime(
-				time.strptime(t, "%Y-%m-%d %H:%M:%S") if isinstance(t, str) else t) * 1000),
+			"lastUpdate": int(datetime.timestamp(time.strptime(t, "%Y-%m-%d %H:%M:%S") if isinstance(t, str) else t)),
 			"video": int(data["video"]),
 			"FileSizeNoVideo": "7331" if int(data["video"]) == 1 else ""
 		}
