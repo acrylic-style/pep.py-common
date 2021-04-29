@@ -146,7 +146,8 @@ def directToApiStatus(directStatus):
 	if directStatus is None:
 		return None
 	elif directStatus == 0 or directStatus == 7:
-		return [1, 2]
+		# 1, 2
+		return 999
 	elif directStatus == 8:
 		return 4
 	elif directStatus == 3:
