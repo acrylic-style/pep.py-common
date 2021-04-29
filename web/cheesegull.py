@@ -106,40 +106,41 @@ def updateBeatmap(setID):
 	# return (True, "") if data["Ok"] else (False, data["Message"])
 
 def toDirect(data):
-	if "ChildrenBeatmaps" not in data or data["ChildrenBeatmaps"] is None:
-		raise ValueError("`data` doesn't contain a valid cheesegull response")
-	s = "{SetID}.osz|{Artist}|{Title}|{Creator}|{RankedStatus}|0.00|{LastUpdate}|{SetID}|" \
-		"{SetID}|{HasVideoInt}|0|1337|{FileSizeNoVideo}|".format(
-			**{k: v.replace("|", "-") if type(v) is str else v for k, v in data.items()},
+	if len(data) == 0:
+		return ""
+	s = "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|0.00|{last_update}|{beatmapset_id}|" \
+		"{beatmapset_id}|{HasVideoInt}|0|1337|{FileSizeNoVideo}|".format(
+			**data[0],
 			**{
-				"HasVideoInt": int(data["HasVideo"]),
-				"FileSizeNoVideo": "7331" if data["HasVideo"] else ""
+				"HasVideoInt": int(data[0]["video"]),
+				"FileSizeNoVideo": "7331" if int(data[0]["video"]) == 1 else ""
 			}
 		)
-	if len(data["ChildrenBeatmaps"]) > 0:
-		for i in data["ChildrenBeatmaps"]:
-			s += \
-				"{DiffNameSanitized} ({DifficultyRating:.2f}★~{BPM}♫~AR{AR}~OD{OD}~CS{CS}~HP{HP}~{ReadableLength})" \
-				 "@{Mode},".format(
-					**i,
-					**{
-						"DiffNameSanitized": i["DiffName"].replace("@", "").replace("|", "-"),
-						"ReadableLength": "{}m{}s".format(i["TotalLength"] // 60, i["TotalLength"] % 60)
-					}
-				)
+	for i in data:
+		s += \
+			"{DiffNameSanitized} ({difficultyrating:.2f}★~{bpm}♫~AR{diff_approach}~OD{diff_overall}~CS{diff_size}~HP{diff_drain}~{ReadableLength})" \
+			"@{playmode},".format(
+				**i,
+				**{
+					"DiffNameSanitized": i["version"].replace("@", "").replace("|", "-"),
+					"ReadableLength": "{}m{}s".format(i["total_length"] // 60, i["total_length"] % 60)
+				}
+			)
 	s = s.strip(",")
 	s += "|"
 	return s
 
+
 def toDirectNp(data):
-	return "{SetID}.osz|{Artist}|{Title}|{Creator}|{RankedStatus}|10.00|{LastUpdate}|{SetID}|" \
-		   "{SetID}|{HasVideoInt}|0|1337|{FileSizeNoVideo}".format(
+	return "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|{rating}|{last_update}|{beatmapset_id}|" \
+		"{beatmapset_id}|{video}|0|1337|{FileSizeNoVideo}".format(
 		**data,
 		**{
-			"HasVideoInt": int(data["HasVideo"]),
-			"FileSizeNoVideo": "7331" if data["HasVideo"] else ""
+			"video": int(data["video"]),
+			"FileSizeNoVideo": "7331" if int(data["video"]) == 1 else ""
 		}
 	)
+
 
 def directToApiStatus(directStatus):
 	if directStatus is None:
