@@ -481,9 +481,7 @@ def incrementReplaysWatched(userID, gameMode):
 	"""
 	mode = scoreUtils.getGameModeForDB(gameMode)
 	glob.db.execute(
-		"UPDATE osu_user_stats{m} SET replay_popularity=replay_popularity+1 WHERE user_id = %s LIMIT 1".format(
-			mode=mode
-		),
+		f"UPDATE osu_user_stats{mode} SET replay_popularity=replay_popularity+1 WHERE user_id = %s LIMIT 1",
 		(userID,)
 	)
 
