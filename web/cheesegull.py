@@ -1,3 +1,5 @@
+import time
+
 import requests
 import json
 
@@ -108,10 +110,11 @@ def updateBeatmap(setID):
 def toDirect(data):
 	if len(data) == 0:
 		return ""
-	s = "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|0.00|{last_update}|{beatmapset_id}|" \
+	s = "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|0.00|{lastUpdate}|{beatmapset_id}|" \
 		"{beatmapset_id}|{HasVideoInt}|0|1337|{FileSizeNoVideo}|".format(
 			**data[0],
 			**{
+				"lastUpdate": int(time.mktime(time.strptime(data[0]["last_update"], "%Y-%m-%d %H:%M:%S")) * 1000),
 				"HasVideoInt": int(data[0]["video"]),
 				"FileSizeNoVideo": "7331" if int(data[0]["video"]) == 1 else ""
 			}
@@ -132,10 +135,11 @@ def toDirect(data):
 
 
 def toDirectNp(data):
-	return "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|{rating}|{last_update}|{beatmapset_id}|" \
+	return "{beatmapset_id}.osz|{artist}|{title}|{creator}|{approved}|{rating}|{lastUpdate}|{beatmapset_id}|" \
 		"{beatmapset_id}|{video}|0|1337|{FileSizeNoVideo}".format(
 		**data,
 		**{
+			"lastUpdate": int(time.mktime(time.strptime(data["last_update"], "%Y-%m-%d %H:%M:%S"))*1000),
 			"video": int(data["video"]),
 			"FileSizeNoVideo": "7331" if int(data["video"]) == 1 else ""
 		}
