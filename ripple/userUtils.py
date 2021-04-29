@@ -79,13 +79,14 @@ def getUserStats(userID, gameMode, *, relax=False):
 	# Return stats + game rank
 	return stats
 
-def getIDSafe(_safeUsername):
+
+def getIDSafe(_safeUsername: str):
 	"""
 	Get user ID from a safe username
 	:param _safeUsername: safe username
 	:return: None if the user doesn't exist, else user id
 	"""
-	result = glob.db.fetch("SELECT user_id FROM phpbb_users WHERE username_clean = %s LIMIT 1", (_safeUsername,))
+	result = glob.db.fetch("SELECT user_id FROM phpbb_users WHERE username_clean = %s LIMIT 1", (_safeUsername.lower(),))
 	if result is not None:
 		return result["user_id"]
 	return None
@@ -328,6 +329,16 @@ def updatePP(userID, gameMode, *, relax=False):
 		"UPDATE osu_user_stats{} SET rank_score=%s WHERE user_id = %s LIMIT 1".format(gm),
 		(pp, userID)
 	)
+	updateRank(userID, gameMode, pp)
+
+
+def updateRank(userID, gameMode, pp=0):
+	gm = gameModes.getGameModeForDB(gameMode)
+	if pp == 0:
+		ppRes = glob.db.fetch("SELECT rank_score FROM osu_user_stats{} WHERE user_id = %s".format(gm), (userID,))
+		if ppRes is None:
+			return
+		pp = ppRes["rank_score"]
 	res = glob.db.fetch(
 		"SELECT COUNT(*) AS `rank` FROM osu_user_stats{} WHERE rank_score >= %s".format(gm),
 		(pp,)
@@ -335,6 +346,16 @@ def updatePP(userID, gameMode, *, relax=False):
 	if res is not None:
 		# Update rank
 		glob.db.execute("UPDATE osu_user_stats{} SET rank_score_index = %s WHERE user_id = %s LIMIT 1".format(gm), (res["rank"], userID))
+
+
+def updateRankGlobally(gameMode):
+	gm = gameModes.getGameModeForDB(gameMode)
+	users = glob.db.fetchAll("SELECT user_id FROM osu_user_stats{}".format(gm))
+	if users is not None:
+		for uid in users:
+			updateRank(uid["user_id"], gameMode)
+	else:
+		log.warning("Fetched None users")
 
 
 def updateStats(userID, score_, *, relax=False):
@@ -389,6 +410,7 @@ def updateStats(userID, score_, *, relax=False):
 
 		# Update pp
 		updatePP(userID, score_.gameMode, relax=relax)
+		updateRankGlobally(score_.gameMode)
 
 
 def incrementUserBeatmapPlaycount(userID, gameMode, beatmapID):
@@ -632,7 +654,7 @@ def restrict(userID):
 	# Set user as restricted in db
 	banDateTime = int(time.time())
 	glob.db.execute(
-		"UPDATE users SET user_warnings = 1 WHERE user_id = %s LIMIT 1",
+		"UPDATE phpbb_users SET user_warnings = 1 WHERE user_id = %s LIMIT 1",
 		(userID)
 	)
 
@@ -666,7 +688,7 @@ def appendNotes(userID, notes, addNl=True, trackDate=True):
 	:return:
 	"""
 	glob.db.execute(
-		"INSERT INTO osu_user_banhistory (`user_id`, `reason`, `ban_status`, `period`) values (%s, %s, 0, 0)",
+		"INSERT INTO osu_user_banhistory (`user_id`, `reason`, `ban_status`, `period`, `banner_id`) values (%s, %s, 0, 0, 999)",
 		(userID, notes)
 	)
 
